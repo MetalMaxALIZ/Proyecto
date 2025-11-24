@@ -6,9 +6,9 @@ from datetime import datetime
 
 
 def crear_base_datos(db_name='juegos_rawg.db'):
-    """
-    Crea la base de datos y la tabla para almacenar los juegos.
-    """
+    
+    # Crea la base de datos y la tabla para almacenar los juegos.
+    
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
     
@@ -29,34 +29,26 @@ def crear_base_datos(db_name='juegos_rawg.db'):
     return conn
 
 
-def extraer_generos(genres_list): # Extrae los nombres de los géneros y los convierte a string separado por comas.
+def extraer_generos(genres_list): 
+    
+    # Extrae los nombres de los géneros y los convierte a string separado por comas.
+
     if not genres_list:
         return None
     return ', '.join([genre['name'] for genre in genres_list])
 
 
 def extraer_tags(tags_list):
-    """
-    Extrae los nombres de los tags y los convierte a string separado por comas.
-    """
+    
+    # Extrae los nombres de los tags y los convierte a string separado por comas.
+    
     if not tags_list:
         return None
     return ', '.join([tag['name'] for tag in tags_list])
 
 
 def obtener_juegos_rawg(api_key, max_paginas=None, delay_entre_requests=1.5, pagina_inicio=1):
-    """
-    Obtiene todos los juegos de la API de RAWG y los guarda en la base de datos.
-    
-    Args:
-        api_key: Clave de API de RAWG
-        max_paginas: Número máximo de páginas a extraer (None = todas)
-        delay_entre_requests: Tiempo de espera entre requests en segundos
-        pagina_inicio: Página desde donde iniciar la extracción (por defecto 1)
-    
-    Returns:
-        pandas.DataFrame: DataFrame con todos los juegos extraídos
-    """
+
     base_url = 'https://api.rawg.io/api/games'
     page_size = 40  # Tamaño máximo permitido por la API
     page = pagina_inicio
@@ -90,7 +82,7 @@ def obtener_juegos_rawg(api_key, max_paginas=None, delay_entre_requests=1.5, pag
             
             # Verificar el status code
             if response.status_code != 200:
-                print(f"\n⚠️  Error: Status code {response.status_code}")
+                print(f"\n  Error: Status code {response.status_code}")
                 print(f"Respuesta: {response.text[:200]}")
                 if response.status_code == 429:  # Too many requests
                     print(f"Esperando 10 segundos antes de reintentar...")
@@ -167,16 +159,16 @@ def obtener_juegos_rawg(api_key, max_paginas=None, delay_entre_requests=1.5, pag
             time.sleep(delay_entre_requests)
             
         except requests.exceptions.Timeout:
-            print(f"\n⚠️  Timeout en página {page}. Reintentando en 5 segundos...")
+            print(f"\n  Timeout en página {page}. Reintentando en 5 segundos...")
             time.sleep(5)
             continue
             
         except requests.exceptions.RequestException as e:
-            print(f"\n❌ Error en la request: {e}")
+            print(f"\n Error en la request: {e}")
             break
             
         except Exception as e:
-            print(f"\n❌ Error inesperado: {e}")
+            print(f"\n Error inesperado: {e}")
             break
     
     # Obtener estadísticas finales
@@ -203,9 +195,9 @@ def obtener_juegos_rawg(api_key, max_paginas=None, delay_entre_requests=1.5, pag
 
 
 def obtener_dataframe_juegos(db_name='juegos_rawg.db'):
-    """
-    Obtiene un DataFrame con todos los juegos de la base de datos.
-    """
+    
+    # Obtiene un DataFrame con todos los juegos de la base de datos.
+    
     conn = sqlite3.connect(db_name)
     df = pd.read_sql_query('''
         SELECT id, name, background_image, metacritic, genres, tags, fecha_extraccion
@@ -216,9 +208,7 @@ def obtener_dataframe_juegos(db_name='juegos_rawg.db'):
 
 
 def main():
-    """
-    Función principal.
-    """
+    
     # IMPORTANTE: Obtén tu API key gratuita en: https://rawg.io/apidocs
     API_KEY = '9fc0fd5a13c34921aa0fea1a1515b205'
     

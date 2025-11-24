@@ -56,16 +56,10 @@ def obtener_steam_id64(vanity_url, api_key):
 
 
 def obtener_juegos_steam(perfil_url, api_key):
-    """
-    Obtiene todos los juegos de una cuenta de Steam y los devuelve en un DataFrame.
     
-    Args:
-        perfil_url: URL del perfil de Steam
-        api_key: Clave de API de Steam (obtener en: https://steamcommunity.com/dev/apikey)
+    # Obtiene todos los juegos de una cuenta de Steam y los devuelve en un DataFrame.
     
-    Returns:
-        pandas.DataFrame: DataFrame con la información de los juegos
-    """
+
     # Extraer el identificador del perfil
     tipo, identificador = extraer_steam_id(perfil_url)
     
@@ -131,10 +125,9 @@ def obtener_juegos_steam(perfil_url, api_key):
 
 
 def main():
-    """
-    Función principal de ejemplo.
-    """
-    # IMPORTANTE: Debes obtener tu propia API key en: https://steamcommunity.com/dev/apikey
+    
+    # Función principal de ejemplo.
+    
     API_KEY = '5EF8885FBA34D73C53DD4AF7564C44C7'
     
     # URL del perfil de Steam
