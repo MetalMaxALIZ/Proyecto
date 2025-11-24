@@ -263,7 +263,7 @@ def main():
     # Configuración
     MAX_PAGINAS = None  # None para extraer todas las páginas, o un número específico
     DELAY = 1.5  # Segundos entre requests (1.5s es conservador)
-    PAGINA_INICIO = 6124  # Cambiar a 1 para empezar desde el principio
+    PAGINA_INICIO = 1  
     
     try:
         # Extraer juegos

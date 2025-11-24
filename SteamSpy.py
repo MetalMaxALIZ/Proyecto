@@ -59,4 +59,12 @@ def fetch_and_save_data():
     conn.close()
     print(f"Recolección de datos completada. Total de páginas: {page}")
 
-fetch_and_save_data()
+# Metodo para obtener un dataframe de steam_data.db
+def obtener_dataframe_steam_data():
+    import pandas as pd
+    conn = sqlite3.connect('steam_data.db')
+    df = pd.read_sql_query("SELECT * FROM steam_games", conn)
+    conn.close()
+    return df
+
+#fetch_and_save_data()
