@@ -5,20 +5,25 @@ import pandas as pd
 from datetime import datetime
 
 
-def crear_base_datos(db_name='juegos_rawg.db'):
+def crear_base_datos(db_name='juegos_rawgv2.db'):
     #
     # Crea la base de datos y la tabla para almacenar los juegos.
     #
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
     
-    # Crear tabla si no existe
+    # Eliminar la tabla si existe para recrearla con la nueva estructura
+    cursor.execute('DROP TABLE IF EXISTS rawg_games')
+    
+    # Crear tabla con la estructura actualizada
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS rawg_games (
             id INTEGER PRIMARY KEY,
             name TEXT,
             background_image TEXT,
             metacritic INTEGER,
+            is_pc BOOLEAN,
+            steam_store_id INTEGER,
             genres TEXT,
             tags TEXT,
             fecha_extraccion TEXT
@@ -42,6 +47,34 @@ def extraer_tags(tags_list):
     if not tags_list:
         return None
     return ', '.join([tag['name'] for tag in tags_list])
+
+
+def es_juego_pc(platforms_list):
+    """
+    Verifica si el juego está disponible para PC.
+    """
+    if not platforms_list:
+        return False
+    
+    for platform_info in platforms_list:
+        platform = platform_info.get('platform', {})
+        if platform.get('name') == 'PC':
+            return True
+    return False
+
+
+def obtener_steam_store_id(stores_list):
+    """
+    Obtiene el ID de Steam Store si el juego está disponible en Steam.
+    """
+    if not stores_list:
+        return None
+    
+    for store_info in stores_list:
+        store = store_info.get('store', {})
+        if store.get('name') == 'Steam':
+            return store_info.get('id')
+    return None
 
 
 def obtener_juegos_rawg(api_key, max_paginas=None, delay_entre_requests=1.5, pagina_inicio=1):
@@ -72,6 +105,7 @@ def obtener_juegos_rawg(api_key, max_paginas=None, delay_entre_requests=1.5, pag
             'key': api_key,
             'page': page,
             'page_size': page_size
+           
         }
         
         # Sistema de reintentos para la página actual
@@ -156,12 +190,22 @@ def obtener_juegos_rawg(api_key, max_paginas=None, delay_entre_requests=1.5, pag
             for game in games:
                 total_juegos += 1
                 
+                # Verificar si es para PC y está en Steam
+                is_pc = es_juego_pc(game.get('platforms', []))
+                steam_id = obtener_steam_store_id(game.get('stores', []))
+                
+                # Solo guardar si es para PC Y está en Steam
+                if not is_pc or steam_id is None:
+                    continue
+                
                 # Extraer información relevante
                 game_data = {
                     'id': game.get('id'),
                     'name': game.get('name'),
                     'background_image': game.get('background_image'),
                     'metacritic': game.get('metacritic'),
+                    'is_pc': is_pc,
+                    'steam_store_id': steam_id,
                     'genres': extraer_generos(game.get('genres', [])),
                     'tags': extraer_tags(game.get('tags', [])),
                     'fecha_extraccion': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -170,13 +214,15 @@ def obtener_juegos_rawg(api_key, max_paginas=None, delay_entre_requests=1.5, pag
                 # Insertar en la base de datos
                 cursor.execute('''
                     INSERT OR REPLACE INTO rawg_games 
-                    (id, name, background_image, metacritic, genres, tags, fecha_extraccion)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    (id, name, background_image, metacritic, is_pc, steam_store_id, genres, tags, fecha_extraccion)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (
                     game_data['id'],
                     game_data['name'],
                     game_data['background_image'],
                     game_data['metacritic'],
+                    game_data['is_pc'],
+                    game_data['steam_store_id'],
                     game_data['genres'],
                     game_data['tags'],
                     game_data['fecha_extraccion']
@@ -231,14 +277,15 @@ def obtener_juegos_rawg(api_key, max_paginas=None, delay_entre_requests=1.5, pag
     return df
 
 
-def obtener_dataframe_juegos(db_name='juegos_rawg.db'):
+def obtener_dataframe_juegos(db_name='juegos_rawgv2.db'):
     
-    # Obtiene un DataFrame con todos los juegos de la base de datos.
+    # Obtiene un DataFrame con todos los juegos de PC disponibles en Steam.
     
     conn = sqlite3.connect(db_name)
     df = pd.read_sql_query('''
-        SELECT id, name, background_image, metacritic, genres, tags, fecha_extraccion
+        SELECT id, name, background_image, metacritic, steam_store_id, genres, tags, fecha_extraccion
         FROM rawg_games
+        WHERE is_pc = 1 AND steam_store_id IS NOT NULL
     ''', conn)
     conn.close()
     return df
