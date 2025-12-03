@@ -15,19 +15,19 @@ def print_log(*args):
     print(*args)
 
 def get_all_app_id(api_key):
-    """
-    Obtiene todos los app IDs de Steam usando el nuevo endpoint IStoreService.
-    El endpoint antiguo ISteamApps/GetAppList fue descontinuado.
-    """
+    
+    #Obtiene todos los app IDs de Steam usando el  endpoint IStoreService.
+    
     all_apps = []
     last_appid = 0
     max_results = 50000
     
     while True:
-        # Usar el nuevo endpoint IStoreService/GetAppList
+        # Usar el endpoint IStoreService/GetAppList
         url = f"https://api.steampowered.com/IStoreService/GetAppList/v1/?key={api_key}&include_games=true&max_results={max_results}"
         
         if last_appid > 0:
+            # Parametro para paginación
             url += f"&last_appid={last_appid}"
         
         try:
