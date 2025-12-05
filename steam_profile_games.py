@@ -111,6 +111,12 @@ def obtener_juegos_steam(perfil_url, api_key):
     # Convertir minutos a horas para mejor legibilidad
     df['tiempo_juego_horas'] = df['tiempo_juego_minutos'] / 60
     
+    # Añadir URL del icono del juego (img_icon_url)
+    df['img_icon_url'] = df.apply(
+        lambda row: f"https://media.steampowered.com/steamcommunity/public/images/apps/{row['app_id']}/{row.get('img_icon_url', '')}.jpg" if 'img_icon_url' in row and row.get('img_icon_url') else f'https://cdn.cloudflare.steamstatic.com/steam/apps/{row["app_id"]}/header.jpg',
+        axis=1
+    )
+    
     # Añadir URL de la imagen del juego
     df['imagen_url'] = df['app_id'].apply(
         lambda x: f'https://cdn.cloudflare.steamstatic.com/steam/apps/{x}/header.jpg'
