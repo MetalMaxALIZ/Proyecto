@@ -4,7 +4,7 @@ import './Recommendations.css';
 function Recommendations({ recomendaciones }) {
   return (
     <div className="recommendations-container">
-      <h2 className="recommendations-title">🎮 Recomendaciones para ti</h2>
+      <h2 className="recommendations-title">🎮 Recommendations for you</h2>
       
       <div className="recommendations-grid">
         {recomendaciones.map((juego, index) => (
@@ -27,22 +27,22 @@ function Recommendations({ recomendaciones }) {
               
               <div className="recommendation-stats">
                 <div className="stat-item">
-                  <span className="stat-label">Géneros:</span>
+                  <span className="stat-label">Genres:</span>
                   <span className="stat-value">{juego.genres || 'N/A'}</span>
                 </div>
                 
                 <div className="stat-item">
-                  <span className="stat-label">Propietarios:</span>
+                  <span className="stat-label">Owners:</span>
                   <span className="stat-value">{juego.owners ? juego.owners.toLocaleString() : 'N/A'}</span>
                 </div>
                 
                 <div className="stat-item">
-                  <span className="stat-label">Valoración:</span>
+                  <span className="stat-label">Rating:</span>
                   <span className="stat-value">{juego.porcentaje_votos_positivos ? `${juego.porcentaje_votos_positivos}%` : 'N/A'}</span>
                 </div>
                 
                 <div className="stat-item">
-                  <span className="stat-label">Similitud:</span>
+                  <span className="stat-label">Similarity:</span>
                   <div className="similarity-bar">
                     <div 
                       className="similarity-fill"
@@ -59,7 +59,7 @@ function Recommendations({ recomendaciones }) {
                 rel="noopener noreferrer"
                 className="steam-link"
               >
-                Ver en Steam →
+                View on Steam →
               </a>
             </div>
           </div>

@@ -89,8 +89,47 @@
 }
 
 .btn-wsip:hover:not(:disabled) {
-  transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+}
+
+.btn-wsip-fixed {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  box-shadow: 0 10px 30px rgba(245, 87, 108, 0.5);
+  animation: pulse 2s infinite;
+}
+
+.btn-wsip-fixed:hover:not(:disabled) {
+  box-shadow: 0 12px 35px rgba(245, 87, 108, 0.6);
+}
+
+.btn-wsip-fixed:active:not(:disabled) {
+  animation: buttonPress 0.2s ease;
+  transform: translateX(-50%) scale(0.95);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 10px 30px rgba(245, 87, 108, 0.5);
+  }
+  50% {
+    box-shadow: 0 10px 40px rgba(245, 87, 108, 0.8);
+  }
+}
+
+@keyframes buttonPress {
+  0% {
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) scale(0.95);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
 }
 
 .error-message {
@@ -123,5 +162,11 @@
   .btn-wsip {
     font-size: 1.2rem;
     padding: 15px 30px;
+  }
+
+  .btn-wsip-fixed {
+    bottom: 20px;
+    font-size: 1rem;
+    padding: 12px 25px;
   }
 }

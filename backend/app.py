@@ -8,18 +8,18 @@ import pickle
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import NearestNeighbors
 
-# Añadir el directorio padre al path para importar los módulos
+# Add parent directory to path to import modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from steam_profile_games import obtener_juegos_steam
 
 app = Flask(__name__)
-CORS(app)  # Permitir peticiones desde React
+CORS(app)  # Allow requests from React
 
-# API Key de Steam
+# Steam API Key
 API_KEY = '5EF8885FBA34D73C53DD4AF7564C44C7'
 
-# Variables globales para el modelo
+# Global variables for the model
 knn_modelo = None
 df_modelo_normalizado = None
 df_modelo = None
@@ -27,15 +27,15 @@ df_combinado_final = None
 juegos_dict = None
 
 def cargar_modelo():
-    """Carga el modelo y los datos necesarios"""
+    """Load the model and necessary data"""
     global knn_modelo, df_modelo_normalizado, df_modelo, df_combinado_final, juegos_dict
     
     try:
-        # Cargar datos (asumiendo que están guardados en archivos pickle o CSV)
-        # Ajusta las rutas según donde guardes los datos del notebook
+        # Load data (assuming they are saved in pickle or CSV files)
+        # Adjust paths according to where you saved the notebook data
         data_path = os.path.join(os.path.dirname(__file__), '..', 'data')
         
-        # Intentar cargar los datos si existen
+        # Try to load data if it exists
         if os.path.exists(os.path.join(data_path, 'df_combinado_final.pkl')):
             df_combinado_final = pd.read_pickle(os.path.join(data_path, 'df_combinado_final.pkl'))
             df_modelo = pd.read_pickle(os.path.join(data_path, 'df_modelo.pkl'))
@@ -49,33 +49,33 @@ def cargar_modelo():
             with open(os.path.join(data_path, 'juegos_dict.pkl'), 'rb') as f:
                 juegos_dict = pickle.load(f)
             
-            print("Modelo cargado correctamente")
+            print("Model loaded successfully")
             return True
         else:
-            print("No se encontraron los archivos del modelo. Ejecuta el notebook primero.")
+            print("Model files not found. Run the notebook first.")
             return False
     except Exception as e:
-        print(f"Error al cargar el modelo: {e}")
+        print(f"Error loading model: {e}")
         return False
 
 @app.route('/api/obtener-juegos', methods=['POST'])
 def obtener_juegos():
-    """Endpoint para obtener los juegos de Steam de un perfil"""
+    """Endpoint to get Steam games from a profile"""
     try:
         data = request.json
         perfil_url = data.get('perfil_url')
         
         if not perfil_url:
-            return jsonify({'error': 'Se requiere perfil_url'}), 400
+            return jsonify({'error': 'perfil_url is required'}), 400
         
-        # Obtener los juegos del perfil
+        # Get games from profile
         df_juegos = obtener_juegos_steam(perfil_url, API_KEY)
         
-        # Ordenar por tiempo de juego
+        # Sort by playtime
         df_juegos = df_juegos.sort_values('tiempo_juego_minutos', ascending=False)
         
-        # Convertir a formato JSON compatible
-        # Asegurarse de que img_icon_url tenga la URL correcta
+        # Convert to JSON compatible format
+        # Ensure img_icon_url has the correct URL
         df_juegos['img_icon_url'] = df_juegos.apply(
             lambda row: f"https://cdn.cloudflare.steamstatic.com/steam/apps/{row['app_id']}/header.jpg",
             axis=1
@@ -96,28 +96,28 @@ def obtener_juegos():
 
 @app.route('/api/recomendar', methods=['POST'])
 def recomendar():
-    """Endpoint para recomendar juegos basados en una lista de juegos seleccionados"""
+    """Endpoint to recommend games based on a list of selected games"""
     try:
         data = request.json
         nombres_juegos = data.get('nombres_juegos', [])
         n_recomendaciones = data.get('n_recomendaciones', 10)
         
         if not nombres_juegos:
-            return jsonify({'error': 'Se requiere una lista de nombres de juegos'}), 400
+            return jsonify({'error': 'A list of game names is required'}), 400
         
         if knn_modelo is None:
-            return jsonify({'error': 'El modelo no está cargado. Ejecuta el notebook primero.'}), 500
+            return jsonify({'error': 'Model is not loaded. Run the notebook first.'}), 500
         
-        # Llamar a la función de recomendación
+        # Call recommendation function
         recomendaciones = recomendar_juegos(nombres_juegos, n_recomendaciones)
         
         if recomendaciones is None or len(recomendaciones) == 0:
             return jsonify({
                 'success': False,
-                'error': 'No se pudieron generar recomendaciones'
+                'error': 'Could not generate recommendations'
             }), 400
         
-        # Convertir a formato JSON
+        # Convert to JSON format
         recomendaciones_json = recomendaciones.to_dict('records')
         
         return jsonify({
@@ -127,11 +127,11 @@ def recomendar():
         })
         
     except Exception as e:
-        return jsonify({'error': f'Error al generar recomendaciones: {str(e)}'}), 500
+        return jsonify({'error': f'Error generating recommendations: {str(e)}'}), 500
 
 def recomendar_juegos(nombres_juegos, n_recomendaciones=10):
     """
-    Función para recomendar juegos similares basándose en juegos del diccionario juegos_dict
+    Function to recommend similar games based on games from juegos_dict dictionary
     """
     if isinstance(nombres_juegos, str):
         nombres_juegos = [nombres_juegos]
@@ -171,7 +171,7 @@ def recomendar_juegos(nombres_juegos, n_recomendaciones=10):
     juegos_recomendados = df_combinado_final.loc[indices_originales][['appid', 'name', 'genres', 'owners', 'porcentaje_votos_positivos']].copy()
     juegos_recomendados['similitud'] = 1 / (1 + np.array(distancias_recomendadas))
     
-    # Añadir imagen URL
+    # Add image URL
     juegos_recomendados['imagen_url'] = juegos_recomendados['appid'].apply(
         lambda x: f'https://cdn.cloudflare.steamstatic.com/steam/apps/{x}/header.jpg'
     )
@@ -180,7 +180,7 @@ def recomendar_juegos(nombres_juegos, n_recomendaciones=10):
 
 @app.route('/api/health', methods=['GET'])
 def health():
-    """Endpoint para verificar el estado del servidor"""
+    """Endpoint to check server status"""
     modelo_cargado = knn_modelo is not None
     return jsonify({
         'status': 'ok',
@@ -188,6 +188,6 @@ def health():
     })
 
 if __name__ == '__main__':
-    print("Iniciando servidor Flask...")
+    print("Starting Flask server...")
     cargar_modelo()
     app.run(debug=True, port=5000)

@@ -1,16 +1,16 @@
 # What Should I Play? 🎮
 
-Sistema de recomendación de juegos de Steam con frontend React y backend Flask.
+Steam game recommendation system with React frontend and Flask backend.
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 Proyecto_con_FrontEnd/
-├── backend/                 # Servidor Flask
-│   ├── app.py              # API principal
-│   ├── export_model.py     # Script para exportar el modelo
-│   └── requirements.txt    # Dependencias Python
-├── frontend/               # Aplicación React
+├── backend/                 # Flask server
+│   ├── app.py              # Main API
+│   ├── export_model.py     # Script to export model
+│   └── requirements.txt    # Python dependencies
+├── frontend/               # React application
 │   ├── public/
 │   ├── src/
 │   │   ├── components/
@@ -23,142 +23,142 @@ Proyecto_con_FrontEnd/
 │   │   ├── index.js
 │   │   └── index.css
 │   └── package.json
-├── data/                   # Datos del modelo (se genera automáticamente)
-└── steam_profile_games.py  # Funciones para obtener juegos de Steam
+├── data/                   # Model data (auto-generated)
+└── steam_profile_games.py  # Functions to get Steam games
 ```
 
-## Configuración Inicial
+## Initial Setup
 
-### 1. Preparar el Modelo de Recomendación
+### 1. Prepare the Recommendation Model
 
-Antes de ejecutar la aplicación, necesitas exportar el modelo desde el notebook:
+Before running the application, you need to export the model from the notebook:
 
-1. Abre el notebook `pruebas.ipynb`
-2. Ejecuta todas las celdas hasta que tengas las siguientes variables:
+1. Open the `pruebas.ipynb` notebook
+2. Run all cells until you have the following variables:
    - `df_combinado_final`
    - `df_modelo`
    - `df_modelo_normalizado`
    - `knn_modelo`
    - `juegos_dict`
 
-3. Al final del notebook, ejecuta:
+3. At the end of the notebook, run:
 
 ```python
-# Importar la función de exportación
+# Import export function
 import sys
 sys.path.append('./backend')
 from export_model import guardar_modelo
 
-# Guardar el modelo
+# Save the model
 guardar_modelo(df_combinado_final, df_modelo, df_modelo_normalizado, knn_modelo, juegos_dict)
 ```
 
-Esto creará la carpeta `data/` con todos los archivos necesarios.
+This will create the `data/` folder with all necessary files.
 
-### 2. Configurar el Backend (Flask)
+### 2. Configure Backend (Flask)
 
-1. Navega a la carpeta backend:
+1. Navigate to backend folder:
 ```powershell
 cd backend
 ```
 
-2. Crea un entorno virtual (opcional pero recomendado):
+2. Create a virtual environment (optional but recommended):
 ```powershell
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 ```
 
-3. Instala las dependencias:
+3. Install dependencies:
 ```powershell
 pip install -r requirements.txt
 ```
 
-4. Inicia el servidor Flask:
+4. Start Flask server:
 ```powershell
 python app.py
 ```
 
-El servidor estará corriendo en `http://localhost:5000`
+Server will be running at `http://localhost:5000`
 
-### 3. Configurar el Frontend (React)
+### 3. Configure Frontend (React)
 
-1. Abre una nueva terminal y navega a la carpeta frontend:
+1. Open a new terminal and navigate to frontend folder:
 ```powershell
 cd frontend
 ```
 
-2. Instala las dependencias de Node.js:
+2. Install Node.js dependencies:
 ```powershell
 npm install
 ```
 
-3. Inicia la aplicación React:
+3. Start React application:
 ```powershell
 npm start
 ```
 
-La aplicación se abrirá automáticamente en `http://localhost:3000`
+The application will automatically open at `http://localhost:3000`
 
-## Uso de la Aplicación
+## Application Usage
 
-1. **Introduce tu URL de perfil de Steam** en el campo de texto:
-   - Ejemplo: `https://steamcommunity.com/id/TuNombre/`
-   - O: `https://steamcommunity.com/profiles/76561198XXXXXXXXX/`
+1. **Enter your Steam profile URL** in the text field:
+   - Example: `https://steamcommunity.com/id/YourName/`
+   - Or: `https://steamcommunity.com/profiles/76561198XXXXXXXXX/`
 
-2. **Haz clic en "Obtener Juegos"** para cargar tu biblioteca
+2. **Click "Get Games"** to load your library
 
-3. **Selecciona los juegos** en los que quieres basarte para las recomendaciones (haz clic en las tarjetas)
+3. **Select the games** you want to base recommendations on (click on the cards)
 
-4. **Haz clic en el botón "WSIP"** para obtener recomendaciones personalizadas
+4. **Click the "WSIP" button** to get personalized recommendations
 
-5. **Explora las recomendaciones** con información detallada de cada juego
+5. **Explore recommendations** with detailed information for each game
 
-## Características
+## Features
 
-- ✅ Obtención automática de juegos desde perfiles públicos de Steam
-- ✅ Visualización de juegos con imágenes y tiempo de juego
-- ✅ Selección múltiple de juegos con interfaz intuitiva
-- ✅ Sistema de recomendación basado en KNN (K-Nearest Neighbors)
-- ✅ Información detallada de recomendaciones (géneros, valoraciones, similitud)
-- ✅ Enlaces directos a la tienda de Steam
-- ✅ Diseño responsive y moderno
+- ✅ Automatic game retrieval from public Steam profiles
+- ✅ Game visualization with images and playtime
+- ✅ Multiple game selection with intuitive interface
+- ✅ KNN-based recommendation system (K-Nearest Neighbors)
+- ✅ Detailed recommendation information (genres, ratings, similarity)
+- ✅ Direct links to Steam store
+- ✅ Responsive and modern design
 
-## Notas Importantes
+## Important Notes
 
-- **Perfil Público**: Tu perfil de Steam debe ser público para que la aplicación pueda acceder a tu biblioteca
-- **API Key**: La API key de Steam está incluida en el código, pero puedes usar la tuya propia en `backend/app.py`
-- **Modelo Pre-entrenado**: El modelo debe estar entrenado y exportado antes de usar la aplicación
+- **Public Profile**: Your Steam profile must be public for the app to access your library
+- **API Key**: Steam API key is included in the code, but you can use your own in `backend/app.py`
+- **Pre-trained Model**: The model must be trained and exported before using the application
 
 ## Troubleshooting
 
-### El backend no puede cargar el modelo
-- Asegúrate de haber ejecutado el script `export_model.py` desde el notebook
-- Verifica que la carpeta `data/` existe y contiene los archivos `.pkl`
+### Backend cannot load model
+- Make sure you've run the `export_model.py` script from the notebook
+- Verify that the `data/` folder exists and contains `.pkl` files
 
-### Error al obtener juegos de Steam
-- Verifica que la URL del perfil sea correcta
-- Asegúrate de que el perfil sea público
-- Comprueba que el backend esté ejecutándose en el puerto 5000
+### Error getting games from Steam
+- Verify that the profile URL is correct
+- Make sure the profile is public
+- Check that the backend is running on port 5000
 
-### El frontend no se conecta al backend
-- Verifica que el backend esté ejecutándose
-- Comprueba la consola del navegador para ver errores específicos
-- Asegúrate de que no haya otro servicio usando el puerto 5000
+### Frontend doesn't connect to backend
+- Verify that the backend is running
+- Check browser console for specific errors
+- Make sure no other service is using port 5000
 
-## Tecnologías Utilizadas
+## Technologies Used
 
 ### Backend
-- Flask - Framework web de Python
-- Flask-CORS - Manejo de CORS
-- Pandas - Procesamiento de datos
-- NumPy - Operaciones numéricas
-- Scikit-learn - Modelo de machine learning (KNN)
+- Flask - Python web framework
+- Flask-CORS - CORS handling
+- Pandas - Data processing
+- NumPy - Numerical operations
+- Scikit-learn - Machine learning model (KNN)
 
 ### Frontend
-- React - Librería de UI
-- Axios - Cliente HTTP
-- CSS3 - Estilos personalizados
+- React - UI library
+- Axios - HTTP client
+- CSS3 - Custom styles
 
-## Licencia
+## License
 
-Este proyecto es de uso educativo.
+This project is for educational use.

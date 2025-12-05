@@ -4,8 +4,8 @@ import './GameList.css';
 function GameList({ juegos, juegosSeleccionados, onToggleJuego }) {
   return (
     <div className="game-list-container">
-      <h2 className="section-title">Tus Juegos ({juegos.length})</h2>
-      <p className="section-subtitle">Selecciona los juegos en los que quieres basarte para obtener recomendaciones</p>
+      <h2 className="section-title">Your Games ({juegos.length})</h2>
+      <p className="section-subtitle">Select the games you want to base your recommendations on</p>
       
       <div className="game-grid">
         {juegos.map((juego) => {
@@ -39,7 +39,7 @@ function GameList({ juegos, juegosSeleccionados, onToggleJuego }) {
               <div className="game-info">
                 <h3 className="game-title">{juego.nombre}</h3>
                 <p className="game-playtime">
-                  ⏱️ {juego.tiempo_juego_horas.toFixed(1)} horas
+                  ⏱️ {juego.tiempo_juego_horas.toFixed(1)} hours
                 </p>
               </div>
             </div>

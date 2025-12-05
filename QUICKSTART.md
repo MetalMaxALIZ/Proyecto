@@ -1,22 +1,22 @@
-# 🚀 Inicio Rápido - What Should I Play?
+# 🚀 Quick Start - What Should I Play?
 
-## Pasos para ejecutar la aplicación
+## Steps to run the application
 
-### 1️⃣ Exportar el Modelo (Solo la primera vez)
+### 1️⃣ Export the Model (First time only)
 
-1. Abre el notebook `pruebas.ipynb` en VS Code
-2. Ejecuta todas las celdas secuencialmente
-3. Al final del notebook, ejecuta la celda titulada "**Exportar Modelo para el Frontend**"
-4. Verás un mensaje de confirmación indicando que los datos se guardaron en la carpeta `data/`
+1. Open `pruebas.ipynb` notebook in VS Code
+2. Run all cells sequentially
+3. At the end of the notebook, run the cell titled "**Export Model for Frontend**"
+4. You'll see a confirmation message indicating data was saved in the `data/` folder
 
-### 2️⃣ Iniciar el Backend
+### 2️⃣ Start Backend
 
-Opción A - Usando el script automático:
+Option A - Using automatic script:
 ```powershell
-.\start_backend.ps1
+.\start_backend.bat
 ```
 
-Opción B - Manual:
+Option B - Manual:
 ```powershell
 cd backend
 python -m venv venv
@@ -25,50 +25,50 @@ pip install -r requirements.txt
 python app.py
 ```
 
-El backend estará corriendo en: **http://localhost:5000**
+Backend will be running at: **http://localhost:5000**
 
-### 3️⃣ Iniciar el Frontend
+### 3️⃣ Start Frontend
 
-**Abre una nueva terminal** y ejecuta:
+**Open a new terminal** and run:
 
-Opción A - Usando el script automático:
+Option A - Using automatic script:
 ```powershell
-.\start_frontend.ps1
+.\start_frontend.bat
 ```
 
-Opción B - Manual:
+Option B - Manual:
 ```powershell
 cd frontend
 npm install
 npm start
 ```
 
-El frontend se abrirá automáticamente en: **http://localhost:3000**
+Frontend will automatically open at: **http://localhost:3000**
 
-## ✅ ¡Listo para usar!
+## ✅ Ready to use!
 
-1. Introduce tu URL de perfil de Steam (debe ser público)
-2. Haz clic en "Obtener Juegos"
-3. Selecciona los juegos que te gustan
-4. Haz clic en "WSIP" para obtener recomendaciones
+1. Enter your Steam profile URL (must be public)
+2. Click "Get Games"
+3. Select the games you like
+4. Click "WSIP" to get recommendations
 
-## ⚠️ Solución de Problemas
+## ⚠️ Troubleshooting
 
-### "No se encontró la carpeta data"
-- Ejecuta la celda de exportación en el notebook `pruebas.ipynb`
+### "data folder not found"
+- Run the export cell in `pruebas.ipynb` notebook
 
-### "Error al conectar con el servidor"
-- Asegúrate de que el backend esté ejecutándose en el puerto 5000
-- Verifica que no haya firewall bloqueando la conexión
+### "Error connecting to server"
+- Make sure backend is running on port 5000
+- Verify no firewall is blocking the connection
 
-### "No se pudieron obtener los juegos"
-- Verifica que tu perfil de Steam sea público
-- Comprueba que la URL del perfil sea correcta
+### "Could not get games"
+- Verify your Steam profile is public
+- Check that the profile URL is correct
 
-## 📝 Notas
+## 📝 Notes
 
-- La primera vez tardará más porque necesita instalar las dependencias
-- Necesitas tener Python 3.8+ y Node.js 14+ instalados
-- El perfil de Steam DEBE ser público para obtener los juegos
+- First time will take longer because it needs to install dependencies
+- You need Python 3.8+ and Node.js 14+ installed
+- Steam profile MUST be public to retrieve games
 
-## 🎮 ¡Disfruta descubriendo nuevos juegos!
+## 🎮 Enjoy discovering new games!

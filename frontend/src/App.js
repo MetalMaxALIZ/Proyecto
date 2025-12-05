@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import './App.css';
 import GameList from './components/GameList';
@@ -12,6 +12,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [loadingRecomendaciones, setLoadingRecomendaciones] = useState(false);
+  const recomendacionesRef = useRef(null);
 
   const handleObtenerJuegos = async (e) => {
     e.preventDefault();
@@ -29,10 +30,10 @@ function App() {
       if (response.data.success) {
         setJuegos(response.data.juegos);
       } else {
-        setError('No se pudieron obtener los juegos');
+        setError('Could not fetch games');
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'Error al conectar con el servidor. Asegúrate de que el backend esté ejecutándose.');
+      setError(err.response?.data?.error || 'Error connecting to server. Make sure the backend is running.');
       console.error('Error:', err);
     } finally {
       setLoading(false);
@@ -51,7 +52,7 @@ function App() {
 
   const handleWSIP = async () => {
     if (juegosSeleccionados.length === 0) {
-      setError('Debes seleccionar al menos un juego');
+      setError('You must select at least one game');
       return;
     }
 
@@ -67,11 +68,15 @@ function App() {
 
       if (response.data.success) {
         setRecomendaciones(response.data.recomendaciones);
+        // Scroll to recommendations after they load
+        setTimeout(() => {
+          recomendacionesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
       } else {
-        setError(response.data.error || 'No se pudieron generar recomendaciones');
+        setError(response.data.error || 'Could not generate recommendations');
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'Error al obtener recomendaciones');
+      setError(err.response?.data?.error || 'Error getting recommendations');
       console.error('Error:', err);
     } finally {
       setLoadingRecomendaciones(false);
@@ -89,7 +94,7 @@ function App() {
               type="text"
               value={perfilUrl}
               onChange={(e) => setPerfilUrl(e.target.value)}
-              placeholder="Introduce tu URL de perfil de Steam"
+              placeholder="Enter your Steam profile URL"
               className="input"
               disabled={loading}
             />
@@ -98,7 +103,7 @@ function App() {
               className="btn btn-primary"
               disabled={loading || !perfilUrl}
             >
-              {loading ? 'Cargando...' : 'Obtener Juegos'}
+              {loading ? 'Loading...' : 'Get Games'}
             </button>
           </div>
         </form>
@@ -110,29 +115,29 @@ function App() {
         )}
 
         {juegos.length > 0 && (
-          <>
-            <GameList 
-              juegos={juegos}
-              juegosSeleccionados={juegosSeleccionados}
-              onToggleJuego={handleToggleJuego}
-            />
-
-            <div className="wsip-section">
-              <button 
-                onClick={handleWSIP}
-                className="btn btn-wsip"
-                disabled={loadingRecomendaciones || juegosSeleccionados.length === 0}
-              >
-                {loadingRecomendaciones ? 'Generando...' : `WSIP (${juegosSeleccionados.length} seleccionados)`}
-              </button>
-            </div>
-          </>
+          <GameList 
+            juegos={juegos}
+            juegosSeleccionados={juegosSeleccionados}
+            onToggleJuego={handleToggleJuego}
+          />
         )}
 
         {recomendaciones.length > 0 && (
-          <Recommendations recomendaciones={recomendaciones} />
+          <div ref={recomendacionesRef}>
+            <Recommendations recomendaciones={recomendaciones} />
+          </div>
         )}
       </div>
+
+      {juegos.length > 0 && (
+        <button 
+          onClick={handleWSIP}
+          className="btn btn-wsip btn-wsip-fixed"
+          disabled={loadingRecomendaciones || juegosSeleccionados.length === 0}
+        >
+          {loadingRecomendaciones ? 'Generating...' : `WSIP (${juegosSeleccionados.length})`}
+        </button>
+      )}
     </div>
   );
 }

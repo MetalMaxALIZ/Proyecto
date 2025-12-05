@@ -1,48 +1,48 @@
 """
-Script para exportar los datos del modelo a archivos pickle
-Ejecuta esto en un notebook o Python después de entrenar el modelo
+Script to export model data to pickle files
+Run this in a notebook or Python after training the model
 """
 import pickle
 import os
 import pandas as pd
 
-# Asegurarse de que el directorio data existe
+# Ensure data directory exists
 data_path = os.path.join(os.path.dirname(__file__), '..', 'data')
 os.makedirs(data_path, exist_ok=True)
 
-# Guardar los DataFrames y el modelo
-# Ejecuta esto en el notebook después de crear las variables
+# Save DataFrames and model
+# Run this in the notebook after creating the variables
 
 def guardar_modelo(df_combinado_final, df_modelo, df_modelo_normalizado, knn_modelo, juegos_dict):
     """
-    Guarda todos los componentes necesarios para el sistema de recomendaciones
+    Saves all necessary components for the recommendation system
     """
-    print("Guardando datos del modelo...")
+    print("Saving model data...")
     
-    # Guardar DataFrames
+    # Save DataFrames
     df_combinado_final.to_pickle(os.path.join(data_path, 'df_combinado_final.pkl'))
-    print("✓ df_combinado_final guardado")
+    print("✓ df_combinado_final saved")
     
     df_modelo.to_pickle(os.path.join(data_path, 'df_modelo.pkl'))
-    print("✓ df_modelo guardado")
+    print("✓ df_modelo saved")
     
-    # Guardar array normalizado
+    # Save normalized array
     with open(os.path.join(data_path, 'df_modelo_normalizado.pkl'), 'wb') as f:
         pickle.dump(df_modelo_normalizado, f)
-    print("✓ df_modelo_normalizado guardado")
+    print("✓ df_modelo_normalizado saved")
     
-    # Guardar modelo KNN
+    # Save KNN model
     with open(os.path.join(data_path, 'knn_modelo.pkl'), 'wb') as f:
         pickle.dump(knn_modelo, f)
-    print("✓ knn_modelo guardado")
+    print("✓ knn_modelo saved")
     
-    # Guardar diccionario de juegos
+    # Save games dictionary
     with open(os.path.join(data_path, 'juegos_dict.pkl'), 'wb') as f:
         pickle.dump(juegos_dict, f)
-    print("✓ juegos_dict guardado")
+    print("✓ juegos_dict saved")
     
-    print("\n¡Todos los datos se guardaron correctamente!")
-    print(f"Ubicación: {data_path}")
+    print("\nAll data saved successfully!")
+    print(f"Location: {data_path}")
 
-# Ejemplo de uso (ejecutar en el notebook):
+# Usage example (run in the notebook):
 # guardar_modelo(df_combinado_final, df_modelo, df_modelo_normalizado, knn_modelo, juegos_dict)
