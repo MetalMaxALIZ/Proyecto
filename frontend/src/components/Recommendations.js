@@ -32,11 +32,6 @@ function Recommendations({ recomendaciones }) {
                 </div>
                 
                 <div className="stat-item">
-                  <span className="stat-label">Owners:</span>
-                  <span className="stat-value">{juego.owners ? juego.owners.toLocaleString() : 'N/A'}</span>
-                </div>
-                
-                <div className="stat-item">
                   <span className="stat-label">Rating:</span>
                   <span className="stat-value">{juego.porcentaje_votos_positivos ? `${juego.porcentaje_votos_positivos}%` : 'N/A'}</span>
                 </div>
@@ -46,10 +41,9 @@ function Recommendations({ recomendaciones }) {
                   <div className="similarity-bar">
                     <div 
                       className="similarity-fill"
-                      style={{ width: `${(juego.similitud * 100).toFixed(0)}%` }}
+                      style={{ width: `${juego.similitud.toFixed(0)}%` }}
                     />
                   </div>
-                  <span className="stat-value">{(juego.similitud * 100).toFixed(1)}%</span>
                 </div>
               </div>
               
