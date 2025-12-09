@@ -10,6 +10,7 @@ from sklearn.neighbors import NearestNeighbors
 
 # Add parent directory to path to import modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'notebooks_and_scripts'))
 
 from steam_profile_games import obtener_juegos_steam
 
@@ -169,7 +170,14 @@ def recomendar_juegos(nombres_juegos, n_recomendaciones=10):
     indices_originales = df_modelo.index[indices_recomendados].tolist()
     
     juegos_recomendados = df_combinado_final.loc[indices_originales][['appid', 'name', 'genres', 'owners', 'porcentaje_votos_positivos']].copy()
-    juegos_recomendados['similitud'] = 1 / (1 + np.array(distancias_recomendadas))
+    sorted_distancias = sorted(distancias_recomendadas)
+    similitudes = []
+    for d in distancias_recomendadas:
+        # Percentil inverso: distancia baja = percentil alto
+        percentil = (len([x for x in sorted_distancias if x > d]) / len(sorted_distancias)) * 100
+        similitudes.append(percentil)
+    
+    juegos_recomendados['similitud'] = [round(s, 1) for s in similitudes]
     
     # Add image URL
     juegos_recomendados['imagen_url'] = juegos_recomendados['appid'].apply(
